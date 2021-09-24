@@ -1,46 +1,24 @@
 import { FaSun, FaMoon } from "react-icons/fa";
-import * as React from 'react';
+import { FunctionComponent } from 'react';
 import { Box, Heading, HStack } from '@chakra-ui/layout';
 import { IconButton, useColorMode } from '@chakra-ui/react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  // ModalHeader,
-  // ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
-import Modal1 from "./Modal";
-
+import Login from "./Login";
+import Register from "./Register";
 
 interface INavbarProps {
 }
 
-const Navbar: React.FunctionComponent<INavbarProps> = (props) => {
+const Navbar: FunctionComponent<INavbarProps> = (props) => {
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  // const { user, setUser } = useContext(UserContext);
   const { colorMode, toggleColorMode } = useColorMode();
-  // const [ successful, setSuccessful ] = React.useState(false);
-  // console.log(onClose)
+
   return (
-    <HStack mt={3} mb={3} justify={'space-between'} >
-      <Heading ml='2rem' >Encrypto</Heading>
+    <HStack mt={3} pb={3} mb={3} justify='space-between' borderBottom='2px' borderColor="gray.200">
+      <Heading fontSize={{ base: 'lg', sm: '2xl', md: '4xl'}} ml={{ base: 0, sm: '1rem', md: '2rem'}} >Encrypto</Heading>
       <Box>
-        <IconButton
-          onClick={toggleColorMode}
-          aria-label="{ icon: Element; }"
-          icon={colorMode === "light" ? <FaSun /> : <FaMoon />}
-          isRound={true}
-          size="lg"
-          mr='2rem'
-          // bgColor='teal'
-        />
-      
-      <Modal1 />
+        <IconButton onClick={toggleColorMode} aria-label="{ icon: Element; }" icon={colorMode === "light" ? <FaSun /> : <FaMoon />} isRound={true} mr={{ base: 0, sm: '1rem', md: '2rem'}} size='lg' />
+      <Login />
+      <Register />
     </Box>
     </HStack>
   );

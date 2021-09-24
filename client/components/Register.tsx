@@ -17,11 +17,11 @@ import { useDisclosure } from "@chakra-ui/react";
 interface IModalProps {
 }
 
-const Modal1: React.FunctionComponent<IModalProps> = (props) => {
+const Register: React.FunctionComponent<IModalProps> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <>
-      <Button mr={10} onClick={onOpen}>login</Button>
+      <Button mr={{ base: 0, sm: '1rem', md: '2rem'}} onClick={onOpen} fontSize={{ base: 'sm', sm: 'lg', md: 'xl'}}>register</Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -44,4 +44,4 @@ const Modal1: React.FunctionComponent<IModalProps> = (props) => {
   );
 };
 
-export default Modal1;
+export default Register;
