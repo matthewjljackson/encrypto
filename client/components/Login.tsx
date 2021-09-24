@@ -1,26 +1,30 @@
-import * as React from 'react';
-import { FaSun, FaMoon } from "react-icons/fa";
-import { Box, Heading, HStack } from '@chakra-ui/layout';
-import { IconButton, useColorMode, useColorModeValue } from '@chakra-ui/react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  // ModalHeader,
-  // ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
-import { Button } from "@chakra-ui/react";
+import { FunctionComponent, useState, FormEvent } from 'react';
+import { useColorModeValue } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
+import { useContext } from 'react';
+import { Heading, VStack } from '@chakra-ui/layout';
+import { Input } from '@chakra-ui/input';
+import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
+
 
 interface IModalProps {
 }
 
-const Login: React.FunctionComponent<IModalProps> = (props) => {
+const Login: FunctionComponent<IModalProps> = (props) => {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loadState, setLoadState] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const bgColor = useColorModeValue('whiteAlpha', 'gray.800');
   const fontColor = useColorModeValue('black', 'whiteAlpha');
+  function handleSubmit(e:FormEvent) {
+    e.preventDefault();
+    console.log(username, password);
+    setPassword('');
+    setUsername('');
+  }
   return (
     <>
       <Button mr={{ base: 0, sm: '0.8rem', md: '1.5rem'}} fontSize={{ base: 'sm', sm: 'lg', md: 'xl'}} onClick={onOpen} textColor={fontColor} colorScheme={bgColor}>login</Button>
@@ -28,18 +32,24 @@ const Login: React.FunctionComponent<IModalProps> = (props) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          {/* <ModalHeader>Modal Title</ModalHeader> */}
           <ModalCloseButton />
           <ModalBody>
-            <Button>close</ Button>
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <VStack mt='1rem'  borderRadius='0.5rem' spacing={4} pt='15' pb='30' maxW='400' >
+                <Heading>Login</Heading>
+                <FormControl id="username" isRequired  w='70%'>
+                  <FormLabel>Username</FormLabel>
+                  <Input borderColor='teal'type="text"  value={username} onChange={(e)=>setUsername(e.target.value)} />
+                </FormControl>
+                <FormControl id="password" isRequired w='70%'>
+                  <FormLabel>Password</FormLabel>
+                  <Input type="password" value={password} borderColor='teal' onChange={(e)=>setPassword(e.target.value)}/>
+                  <FormHelperText>We'll never share your data.</FormHelperText>
+              </FormControl>
+              <Button type='submit' isLoading={loadState} loadingText='logging in' onClick={onClose} colorScheme='teal'>Sign in</Button>
+              </VStack>
+            </form>
           </ModalBody>
-
-          {/* <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

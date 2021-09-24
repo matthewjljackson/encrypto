@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { Container } from '@chakra-ui/layout';
 import { GetServerSideProps } from 'next';
 import { ICoin } from '../interfaces/ICoin';
-import Home1 from '../components/Home';
+import Home1 from '../components/FrontPage';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log(context.req)
