@@ -1,5 +1,4 @@
 import { FunctionComponent, useState, FormEvent } from 'react';
-import { useColorModeValue } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useContext } from 'react';
@@ -8,26 +7,52 @@ import { Input } from '@chakra-ui/input';
 import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
 
 
-interface IModalProps {
+interface IRegisterProps {
 }
 
-const Register: FunctionComponent<IModalProps> = (props) => {
+const Register: FunctionComponent<IRegisterProps> = (props) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loadState, setLoadState] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [message, setMessage] = useState("We'll never share your data.");
+  const [messageColor, setMessageColor] = useState("gray");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  
   function handleSubmit(e:FormEvent) {
     e.preventDefault();
-    console.log(username, password);
-    setPassword('');
-    setUsername('');
+    fetch('http://localhost:3001/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ username, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.id) {
+        onClose();
+        setPassword('');
+        setUsername('');
+        setMessage("We'll never share your data.");
+        setMessageColor('gray');
+      } else if (data.errors.username) {
+        setMessage(data.errors.username);
+        setMessageColor('red');
+      } else if (data.errors.password) {
+        setPassword('');
+        setMessage(data.errors.password);
+        setMessageColor('red');
+      }
+    })
+    .catch(err => console.log('blah',err))
   }
+
   return (
     <>
       <Button mr={{ base: 0, sm: '0.8rem', md: '1.5rem'}} fontSize={{ base: 'sm', sm: 'lg', md: 'xl'}} onClick={onOpen}>register</Button>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={() => {onClose(); setMessage("We'll never share your data.");setMessageColor('gray');setPassword('');setUsername('');}}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
@@ -42,9 +67,9 @@ const Register: FunctionComponent<IModalProps> = (props) => {
                 <FormControl id="password" isRequired w='70%'>
                   <FormLabel>Password</FormLabel>
                   <Input type="password" value={password} borderColor='teal' onChange={(e)=>setPassword(e.target.value)}/>
-                  <FormHelperText>We'll never share your data.</FormHelperText>
+                  <FormHelperText color={messageColor}>{message}</FormHelperText>
               </FormControl>
-              <Button type='submit' isLoading={loadState} loadingText='creating account' onClick={onClose} colorScheme='teal'>create account</Button>
+              <Button type='submit' colorScheme='teal'>create account</Button>
               </VStack>
             </form>
           </ModalBody>
