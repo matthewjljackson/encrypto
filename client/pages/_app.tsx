@@ -11,9 +11,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
       <UserContext.Provider value={{user, setUser}} >
-      <Layout>
+      {/* <Layout> */}
         <Component {...pageProps} />
-      </Layout>
+      {/* </Layout> */}
       </UserContext.Provider>
     </ChakraProvider>
   )

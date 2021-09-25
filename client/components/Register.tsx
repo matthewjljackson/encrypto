@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { Heading, VStack } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
 import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
-
+import { useRouter } from 'next/router';
 
 interface IRegisterProps {
 }
@@ -17,6 +17,7 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
   const [message, setMessage] = useState("We'll never share your data.");
   const [messageColor, setMessageColor] = useState("gray");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
   
   function handleSubmit(e:FormEvent) {
     e.preventDefault();
@@ -36,6 +37,7 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
         setUsername('');
         setMessage("We'll never share your data.");
         setMessageColor('gray');
+        router.push('/dashboard')
       } else if (data.errors.username) {
         setMessage(data.errors.username);
         setMessageColor('red');
@@ -52,7 +54,7 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
     <>
       <Button mr={{ base: 0, sm: '0.8rem', md: '1.5rem'}} fontSize={{ base: 'sm', sm: 'lg', md: 'xl'}} onClick={onOpen}>register</Button>
 
-      <Modal isOpen={isOpen} onClose={() => {onClose(); setMessage("We'll never share your data.");setMessageColor('gray');setPassword('');setUsername('');}}>
+      <Modal isOpen={isOpen} isCentered onClose={() => {onClose(); setMessage("We'll never share your data.");setMessageColor('gray');setPassword('');setUsername('');}}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />

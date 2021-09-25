@@ -7,13 +7,15 @@ import { Input } from '@chakra-ui/input';
 import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
 import { UserContext } from '../context/UserContext';
 import { useContext } from 'react';
-import { IUser } from '../interfaces/IUser'
+import { IUser } from '../interfaces/IUser';
+import { useRouter } from 'next/router';
 
 interface ILoginProps {
 }
 
 const Login: FunctionComponent<ILoginProps> = (props) => {
 
+  const router = useRouter();
   const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +42,7 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
         setUsername('');
         setMessage("We'll never share your data.");
         setMessageColor('gray');
+        router.push('/dashboard');
       } else if (data.errors.username) {
         setMessage(data.errors.username);
         setMessageColor('red');
@@ -57,7 +60,7 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
     <>
       <Button mr={{ base: 0, sm: '0.8rem', md: '1.5rem'}} fontSize={{ base: 'sm', sm: 'lg', md: 'xl'}} onClick={onOpen} textColor={fontColor} colorScheme={bgColor}>login</Button>
 
-      <Modal isOpen={isOpen} onClose={() => {onClose(); setMessage("We'll never share your data.");setMessageColor('gray');setPassword(''); setUsername('');}}>
+      <Modal isOpen={isOpen} isCentered onClose={() => {onClose(); setMessage("We'll never share your data.");setMessageColor('gray');setPassword(''); setUsername('');}}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />

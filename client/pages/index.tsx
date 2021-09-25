@@ -1,8 +1,10 @@
 import type { NextPage } from 'next';
-import { Container } from '@chakra-ui/layout';
+import { Container, VStack } from '@chakra-ui/layout';
 import { GetServerSideProps } from 'next';
 import { ICoin } from '../interfaces/ICoin';
 import Home1 from '../components/FrontPage';
+import Navbar from '../components/Navbar';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log(context.req)
@@ -19,9 +21,16 @@ interface IHomeProps {
 
 const Home: NextPage<IHomeProps> = ({ coins }) => {
   return (
-    <Container maxW='container.lg' >
-      <Home1 coins={coins} />
-    </Container>
+    <VStack>
+      <Container p={0} m={0} w={{ base: '100%'}} maxW='container.lg'>
+        <Head>
+          <title>Home</title>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        </Head>
+        <Navbar />
+        <Home1 coins={coins} />
+      </Container>
+    </VStack>
   )
 }
 
