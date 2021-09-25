@@ -7,7 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const connectDb = () => {
     try {
         console.log('connecting to mongoose');
-        return mongoose_1.default.connect('mongodb://localhost:27017/loginjwt');
+        return mongoose_1.default.connect('mongodb://localhost:27017/encrypto');
     }
     catch (error) {
         console.log(error);

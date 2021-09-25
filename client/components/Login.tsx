@@ -2,17 +2,19 @@ import { FunctionComponent, useState, FormEvent } from 'react';
 import { useColorModeValue } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
-import { useContext } from 'react';
 import { Heading, VStack } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
 import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
-
+import { UserContext } from '../context/UserContext';
+import { useContext } from 'react';
+import { IUser } from '../interfaces/IUser'
 
 interface ILoginProps {
 }
 
 const Login: FunctionComponent<ILoginProps> = (props) => {
 
+  const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState("We'll never share your data.");
@@ -31,8 +33,8 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       if (data.id) {
+        setUser({username: data.username, id: data.id})
         onClose();
         setPassword('');
         setUsername('');
@@ -49,6 +51,7 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
     })
     .catch(err => console.log('blah',err))
   }
+  console.log(user)
 
   return (
     <>

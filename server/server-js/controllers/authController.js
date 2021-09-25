@@ -11,25 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const User = require("../models/User");
 const jwt = require('jsonwebtoken');
-// handle errors
 const handleErrors = (err) => {
     console.log(err.message, err.code);
     let errors = { username: '', password: '' };
-    // duplicate username error
+    // register username error
     if (err.code === 11000) {
         errors.username = 'that username is already registered';
-        // return errors;
-        // console.log(errors)
     }
     // validation errors
     if (err.message.includes('user validation failed')) {
-        // console.log(err);
         Object.values(err.errors).forEach(({ properties }) => {
-            // console.log(val);
-            // console.log(properties);
             errors[properties.path] = properties.message;
         });
-        // console.log(errors)
     }
     //handle login errors here
     if (err.message === 'incorrect password') {
@@ -39,40 +32,30 @@ const handleErrors = (err) => {
     if (err.message === 'that username does not exist') {
         errors.username = 'that username does not exist';
     }
-    // console.log(errors)
     return errors;
 };
-// create json web token
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 24 * 60 * 60;
 const createToken = (id) => {
-    return jwt.sign({ id }, 'net ninja secret', {
+    return jwt.sign({ id }, 'super duper secret password', {
         expiresIn: maxAge // expects time in seconds
     });
 };
-// controller actions
-module.exports.signup_get = (req, res) => {
-    console.log('get sign up');
-};
-module.exports.login_get = (req, res) => {
-    console.log('get login');
-};
-module.exports.signup_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('signup post');
+const registerPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('register post request');
     const { username, password } = req.body;
     try {
         const user = yield User.create({ username, password });
         const token = createToken(user._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        // console.log(res.cookie)
         res.status(201).json({ id: user._id, username: user.username });
     }
     catch (err) {
-        // res.status(400).send('an error occured');
         const errors = handleErrors(err);
         res.status(400).json({ errors });
     }
 });
-module.exports.login_post = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const loginPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('login post request');
     const { username, password } = req.body;
     try {
         const user = yield User.login(username, password);
@@ -84,6 +67,8 @@ module.exports.login_post = (req, res) => __awaiter(void 0, void 0, void 0, func
         const errors = handleErrors(error);
         res.status(400).json({ errors });
     }
-    // console.log(username, password);
-    // res.send('user login');
 });
+module.exports = {
+    loginPost,
+    registerPost
+};
