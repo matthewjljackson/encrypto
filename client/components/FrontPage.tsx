@@ -10,9 +10,12 @@ interface IFrontPageProps {
 
 const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins }) => {
 
-  function commafy( numStr:string ) {
-    numStr = numStr.replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    return numStr
+  function commafy( num:number ) {
+    let str = num.toString().split('.');
+    if (str[0].length >= 5) {
+        str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    }
+    return str.join('.');
   }
 
   return (
@@ -34,7 +37,7 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins }) => {
               </HStack>
             </Td>
             <Td>
-              <Text fontSize={{ base: 'xs', sm: 'lg'}}>${Math.round(coin.price * 100) / 100}</ Text>
+              <Text fontSize={{ base: 'xs', sm: 'lg'}}>${commafy(Math.round(coin.price * 100) / 100)}</ Text>
               <Text fontSize={{ base: 'xs', sm: 'sm'}} color={(coin["1d"].price_change_pct*100)>0 ? 'green' : 'red'}>{Math.round(coin["1d"].price_change_pct * 10000)/100}%</Text>
             </Td>
             <Td display={{ base: 'none', md: "table-cell"}} fontSize={{ base: 'sm', md: 'lg'}}>${commafy(coin.market_cap)}</Td>

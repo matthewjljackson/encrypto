@@ -24,21 +24,30 @@ interface IHomeProps {
 
 const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
 
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [ userCoins, setUserCoins ] = useState<any>(null);
+  const [ newEntry, setNewEntry ] = useState(0);
 
   useEffect(() => {
     console.log('blah',user)
     fetch('http://localhost:3001/coins', {
       credentials: "include",
       method: "GET",
-      // mode: 'no-cors',
       headers: {"Content-Type": "application/json"},
-      // body: JSON.stringify(user.username)
     })
     .then(res => res.json())
-    .then(data => console.log(data))
-  }, [])
+    .then((data:any) => {
+      console.log('here',data);
+      for (let j=0; j < data.length; j++) {
+        for (let i=0; i < coins.length; i++) {
+          if (data[j].symbol === coins[i].symbol) {
+            data[j].lastPrice = coins[i].price;
+            break;
+          }
+        }}
+        setUserCoins(data);
+      })
+  }, [newEntry])
 
   return (
     <Container maxW='container.lg' display='flex' flexDirection='column'>
@@ -48,7 +57,7 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
       </Head>
       <UserNav />
       <Portfolio />
-      <Positions />
+      <Positions coins={coins} newEntry={newEntry} setNewEntry={setNewEntry} userCoins={userCoins}/>
       <Home1 coins={coins} />
     </Container>
   )
