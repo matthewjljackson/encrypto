@@ -25,7 +25,7 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
 
   function commafy( num:number ) {
     let str = num.toString().split('.');
-    if (str[0].length >= 5) {
+    if (str[0].length >= 3) {
         str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
     }
     return str.join('.');
@@ -35,8 +35,17 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
     return Math.round(num * 100) / 100
   }
 
-  function handleClick() {
-
+  function handleClick(coin:any) {
+    console.log(coin)
+    fetch('http://localhost:3001/coins', {
+      credentials: "include",
+      method: "DELETE",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ _id: coin._id })
+    })
+    .then(res => res.json())
+    .then((data:any) => setNewEntry(newEntry + 1))
+    .catch(err => console.log('blah',err))
   }
   return (
     <Table variant="striped" colorScheme="gray">
@@ -61,21 +70,19 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
           const currentValue = coinData.quantity * coinData.lastPrice;
           const openValue = coinData.quantity * coinData.openPrice;
           const percentChange = (currentValue-openValue)/openValue*100
-          return (<Tr key={coinData.symbol}>
+          return (<Tr key={coinData.symbol} value={coinData}>
           <Td>{coinData.symbol}</Td>
           <Td>${commafy(Math.round(coinData.lastPrice * 100) / 100)}</Td>
           <Td>${commafy(coinData.openPrice)}</Td>
           <Td>{date.toDateString().slice(4,10)}</Td>
           <Td isNumeric>{coinData.quantity}</Td>
           <Td isNumeric>{commafy(twoDecimalPlaces(coinData.lastPrice * coinData.quantity))}</Td>
-          <Td isNumeric>
-            {/* <HStack> */}
+          <Td>
               <Text>${commafy(Math.round((currentValue-openValue) * 100) / 100)}</Text>
               <Text color={(percentChange>0) ? 'green' : 'red'} >({commafy(Math.round(percentChange * 100) / 100)}%)</Text>
-            {/* </HStack> */}
             </Td>
           <Td>
-          <IconButton aria-label="{ icon: Element; }" onClick={handleClick} icon={<FaTimes/>} colorScheme='red' size='sm' />
+          <IconButton aria-label="{ icon: Element; }" onClick={() => handleClick(coinData)} icon={<FaTimes/>} colorScheme='red' size='sm' />
           </Td>
         </Tr>)}
         )}

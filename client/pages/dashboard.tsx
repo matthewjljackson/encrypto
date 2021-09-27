@@ -45,7 +45,6 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
       let ope = 0;
       for (let j=0; j < data.length; j++) {
         for (let i=0; i < coins.length; i++) {
-          // console.log(i)
           if (data[j].symbol === coins[i].symbol) {
             data[j].lastPrice = coins[i].price;
             curr = curr + data[j].lastPrice * data[j].quantity;

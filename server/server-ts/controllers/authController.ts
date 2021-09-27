@@ -86,8 +86,6 @@ export const coinsGet = async (req: Request, res: Response) => {
 }
 
 export const coinsPost = async (req: Request, res: Response) => {
-  // const x = await bcrypt.compare('america', "$2b$10$DxSxoNLjiUKXP4YEJdBGUOgItxH0FtvCSMLes5CSnfyNhEf3ft9mK")
-  // console.log(x)
   console.log('coin posting');
   const { symbol, openPrice, quantity, startDate } = req.body;
   try {
@@ -96,6 +94,21 @@ export const coinsPost = async (req: Request, res: Response) => {
     const addCoinsToUser = await owner.coins.push(addCoin._id);
     await owner.save();
     res.status(200).json({ status: 'coins added' })
+  } catch (error) {
+    const errors = handleErrors(error);
+    res.status(400).json({ errors });
+  }
+}
+
+export const coinsDelete = async (req: Request, res: Response) => {
+  console.log('coin deleting');
+  const { _id } = req.body;
+  try {
+    const owner:any = await User.findById(res.locals.user.id);
+    const coinDoc:any = await Coin.deleteOne({ _id });
+    await owner.coins.pull({ _id });
+    await owner.save();
+    res.status(200).json({ status: 'coins deleted' })
   } catch (error) {
     const errors = handleErrors(error);
     res.status(400).json({ errors });

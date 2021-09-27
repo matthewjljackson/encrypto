@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.coinsPost = exports.coinsGet = exports.loginPost = exports.registerPost = void 0;
+exports.coinsDelete = exports.coinsPost = exports.coinsGet = exports.loginPost = exports.registerPost = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../models/User");
 const User_2 = require("../models/User");
@@ -98,8 +98,6 @@ const coinsGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.coinsGet = coinsGet;
 const coinsPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const x = await bcrypt.compare('america', "$2b$10$DxSxoNLjiUKXP4YEJdBGUOgItxH0FtvCSMLes5CSnfyNhEf3ft9mK")
-    // console.log(x)
     console.log('coin posting');
     const { symbol, openPrice, quantity, startDate } = req.body;
     try {
@@ -115,3 +113,19 @@ const coinsPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.coinsPost = coinsPost;
+const coinsDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('coin deleting');
+    const { _id } = req.body;
+    try {
+        const owner = yield User_1.User.findById(res.locals.user.id);
+        const coinDoc = yield User_2.Coin.deleteOne({ _id });
+        yield owner.coins.pull({ _id });
+        yield owner.save();
+        res.status(200).json({ status: 'coins deleted' });
+    }
+    catch (error) {
+        const errors = handleErrors(error);
+        res.status(400).json({ errors });
+    }
+});
+exports.coinsDelete = coinsDelete;
