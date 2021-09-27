@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, FunctionComponent } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -8,17 +8,26 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Button, IconButton
+  Button, IconButton, FormControl, FormLabel, FormHelperText
 } from "@chakra-ui/react";
 import { FaTimes, FaPlus } from "react-icons/fa";
+import { Heading, VStack, HStack } from '@chakra-ui/layout';
+import { Input } from '@chakra-ui/input';
+// import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
 
 
 interface INewPositionProps {
 }
 
-const NewPosition: React.FunctionComponent<INewPositionProps> = (props) => {
+const NewPosition: FunctionComponent<INewPositionProps> = (props) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [symbol, setSymbol] = useState('');
+  const [openPrice, setOpenPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
+  function handleSubmit() {
+
+  }
 
   return (
     <>
@@ -27,14 +36,33 @@ const NewPosition: React.FunctionComponent<INewPositionProps> = (props) => {
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Add position</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <p>sfsffshfsdhfdd</p>
+            
+          <form onSubmit={() => handleSubmit()}>
+                {/* <Heading>Add position</Heading> */}
+              <VStack pb='2rem'>
+                <HStack mt='1rem'  borderRadius='0.5rem' spacing={4} pt='15' pb='30' maxW='400' >
+                  <FormControl id="symbol" isRequired>
+                    <FormLabel>Symbol</FormLabel>
+                    <Input borderColor='teal'type="text"  value={symbol} onChange={(e)=>setSymbol(e.target.value)} />
+                  </FormControl>
+                  <FormControl id="openPrice" isRequired>
+                    <FormLabel>Open price</FormLabel>
+                    <Input type="text" value={openPrice} borderColor='teal' onChange={(e)=>setOpenPrice(e.target.value)}/>
+                    {/* <FormHelperText color={messageColor}>{message}</FormHelperText> */}
+                </FormControl>
+                <FormControl id="quantity" isRequired>
+                    <FormLabel>Quantity</FormLabel>
+                    <Input borderColor='teal'type="text"  value={quantity} onChange={(e)=>setQuantity(e.target.value)} />
+                  </FormControl>
+                </HStack>
+                <Button type='submit' onClick={onClose}  colorScheme='teal'>Add</Button>
+              </VStack >
+            </form>
+
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

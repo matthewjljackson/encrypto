@@ -6,12 +6,14 @@ import { Heading, VStack } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
 import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { UserContext } from '../context/UserContext';
 
 interface IRegisterProps {
 }
 
 const Register: FunctionComponent<IRegisterProps> = (props) => {
 
+  const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState("We'll never share your data.");
@@ -32,6 +34,7 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
     .then(res => res.json())
     .then(data => {
       if (data.id) {
+        setUser({username: data.username, id: data.id})
         onClose();
         setPassword('');
         setUsername('');
