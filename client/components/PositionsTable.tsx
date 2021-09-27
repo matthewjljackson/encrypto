@@ -31,6 +31,10 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
     return str.join('.');
   }
 
+  function twoDecimalPlaces(num: number) {
+    return Math.round(num * 100) / 100
+  }
+
   function handleClick() {
 
   }
@@ -63,7 +67,7 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
           <Td>${commafy(coinData.openPrice)}</Td>
           <Td>{date.toDateString().slice(4,10)}</Td>
           <Td isNumeric>{coinData.quantity}</Td>
-          <Td isNumeric>{coinData.openPrice * coinData.quantity}</Td>
+          <Td isNumeric>{commafy(twoDecimalPlaces(coinData.lastPrice * coinData.quantity))}</Td>
           <Td isNumeric>
             {/* <HStack> */}
               <Text>${commafy(Math.round((currentValue-openValue) * 100) / 100)}</Text>

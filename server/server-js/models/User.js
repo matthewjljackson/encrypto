@@ -68,7 +68,7 @@ userSchema.static('login', function (username, password) {
 const coinSchema = new mongoose_1.Schema({
     owner: { type: mongoose_1.Schema.Types.ObjectId, ref: 'user', required: true },
     symbol: { type: String, required: true },
-    openPrice: { type: String, required: true },
+    openPrice: { type: Number, required: true },
     quantity: { type: Number, required: true },
     timestamp: { type: Number, required: true }
 });

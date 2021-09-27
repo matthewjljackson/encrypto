@@ -67,7 +67,7 @@ userSchema.static('login', async function(username: string, password: string) {
 const coinSchema = new Schema<any>({
   owner: { type: Schema.Types.ObjectId, ref: 'user', required:true },
   symbol: { type: String, required: true },
-  openPrice: { type: String, required: true },
+  openPrice: { type: Number, required: true },
   quantity: { type: Number, required: true },
   timestamp: { type: Number, required: true }
 })
