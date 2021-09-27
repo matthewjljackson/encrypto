@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const connectDb = () => {
+export const connectDb = () => {
   try {
     console.log('connecting to mongoose');
     return mongoose.connect('mongodb://localhost:27017/encrypto');
@@ -8,5 +8,3 @@ const connectDb = () => {
     console.log(error);
   }
 };
-
-module.exports = {connectDb};

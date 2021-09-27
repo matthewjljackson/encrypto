@@ -1,24 +1,24 @@
 import {Request, Response} from 'express';
-const User = require("../models/User");
-const jwt = require('jsonwebtoken');
+import jwt from'jsonwebtoken';
 import { IUser } from '../interfaces/IUser';
+import { User } from "../models/User";
+import { Coin } from "../models/User";
+const bcrypt = require('bcrypt')
+
 
 const handleErrors = (err: any) => {
   console.log(err.message, err.code);
   let errors:any = { username: '', password: '' };
-
   // register username error
   if (err.code === 11000) {
     errors.username = 'that username is already registered';
   }
-  
   // validation errors
   if (err.message.includes('user validation failed')) {
     Object.values(err.errors).forEach(({ properties }:any) => {
       errors[properties.path] = properties.message;
     });
   }
-  
   //handle login errors here
   if (err.message === 'incorrect password') {
     errors.password = 'incorrect password'
@@ -36,11 +36,11 @@ const createToken = (id:string) => {
   });
 };
 
-const registerPost = async (req:Request, res:Response) => {
+export const registerPost = async (req:Request, res:Response) => {
   console.log('register post request');
   const { username, password }:IUser = req.body;
   try {
-    const user = await User.create({ username, password });
+    const user = await User.create<any>({ username, password });
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
     res.status(201).json({ id: user._id, username: user.username });
@@ -52,13 +52,15 @@ const registerPost = async (req:Request, res:Response) => {
  
 }
 
-const loginPost = async (req:Request, res:Response) => {
+export const loginPost = async (req:Request, res:Response) => {
   console.log('login post request');
   const { username, password } = req.body;
+  console.log(password)
   try {
     const user = await User.login( username, password );
     const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    console.log(token, user._id)
+    res.cookie('jwt', token, { httpOnly: true, secure:false, sameSite:'strict', maxAge: maxAge * 1000 });
     res.status(200).json({ id: user._id, username: user.username });
   } catch (error) {
     const errors = handleErrors(error);
@@ -66,7 +68,36 @@ const loginPost = async (req:Request, res:Response) => {
   }
 }
 
-module.exports = {
-  loginPost,
-  registerPost
+export const coinsGet = async (req: Request, res: Response) => {
+  console.log('coin getting');
+  try {
+    const user:any = await User.findById({ _id: res.locals.user.id }).populate('coins');
+    console.log(user.coins[0].openPrice)
+    res.status(200);
+    if (user) {
+      res.json(user.coins);
+    } else {
+      res.json({error: "couldn't find coins"});
+    }
+  } catch (error) {
+    const errors = handleErrors(error);
+    res.status(400).json({ errors });
+  }
+}
+
+export const coinsPost = async (req: Request, res: Response) => {
+  // const x = await bcrypt.compare('america', "$2b$10$DxSxoNLjiUKXP4YEJdBGUOgItxH0FtvCSMLes5CSnfyNhEf3ft9mK")
+  // console.log(x)
+  console.log('coin posting');
+  const { symbol, openPrice, quantity, startDate } = req.body;
+  try {
+    const owner:any = await User.findById(res.locals.user.id);
+    const addCoin = await Coin.create({ owner: owner._id, symbol: symbol.toUpperCase(), openPrice, quantity, timestamp: startDate });
+    const addCoinsToUser = await owner.coins.push(addCoin._id);
+    await owner.save();
+    res.status(200).json({ status: 'coins added' })
+  } catch (error) {
+    const errors = handleErrors(error);
+    res.status(400).json({ errors });
+  }
 }

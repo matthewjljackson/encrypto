@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const User = require("../models/User");
-const jwt = require('jsonwebtoken');
+exports.coinsPost = exports.coinsGet = exports.loginPost = exports.registerPost = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const User_1 = require("../models/User");
+const User_2 = require("../models/User");
+const bcrypt = require('bcrypt');
 const handleErrors = (err) => {
     console.log(err.message, err.code);
     let errors = { username: '', password: '' };
@@ -36,7 +42,7 @@ const handleErrors = (err) => {
 };
 const maxAge = 24 * 60 * 60;
 const createToken = (id) => {
-    return jwt.sign({ id }, 'super duper secret password', {
+    return jsonwebtoken_1.default.sign({ id }, 'super duper secret password', {
         expiresIn: maxAge // expects time in seconds
     });
 };
@@ -44,7 +50,7 @@ const registerPost = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     console.log('register post request');
     const { username, password } = req.body;
     try {
-        const user = yield User.create({ username, password });
+        const user = yield User_1.User.create({ username, password });
         const token = createToken(user._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
         res.status(201).json({ id: user._id, username: user.username });
@@ -54,13 +60,16 @@ const registerPost = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(400).json({ errors });
     }
 });
+exports.registerPost = registerPost;
 const loginPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('login post request');
     const { username, password } = req.body;
+    console.log(password);
     try {
-        const user = yield User.login(username, password);
+        const user = yield User_1.User.login(username, password);
         const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        console.log(token, user._id);
+        res.cookie('jwt', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: maxAge * 1000 });
         res.status(200).json({ id: user._id, username: user.username });
     }
     catch (error) {
@@ -68,7 +77,41 @@ const loginPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json({ errors });
     }
 });
-module.exports = {
-    loginPost,
-    registerPost
-};
+exports.loginPost = loginPost;
+const coinsGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('coin getting');
+    try {
+        const user = yield User_1.User.findById({ _id: res.locals.user.id }).populate('coins');
+        console.log(user.coins[0].openPrice);
+        res.status(200);
+        if (user) {
+            res.json(user.coins);
+        }
+        else {
+            res.json({ error: "couldn't find coins" });
+        }
+    }
+    catch (error) {
+        const errors = handleErrors(error);
+        res.status(400).json({ errors });
+    }
+});
+exports.coinsGet = coinsGet;
+const coinsPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // const x = await bcrypt.compare('america', "$2b$10$DxSxoNLjiUKXP4YEJdBGUOgItxH0FtvCSMLes5CSnfyNhEf3ft9mK")
+    // console.log(x)
+    console.log('coin posting');
+    const { symbol, openPrice, quantity, startDate } = req.body;
+    try {
+        const owner = yield User_1.User.findById(res.locals.user.id);
+        const addCoin = yield User_2.Coin.create({ owner: owner._id, symbol: symbol.toUpperCase(), openPrice, quantity, timestamp: startDate });
+        const addCoinsToUser = yield owner.coins.push(addCoin._id);
+        yield owner.save();
+        res.status(200).json({ status: 'coins added' });
+    }
+    catch (error) {
+        const errors = handleErrors(error);
+        res.status(400).json({ errors });
+    }
+});
+exports.coinsPost = coinsPost;

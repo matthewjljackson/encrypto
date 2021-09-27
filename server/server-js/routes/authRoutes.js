@@ -1,7 +1,11 @@
 "use strict";
-const { Router } = require('express');
-const { registerPost, loginPost } = require('../controllers/authController');
-const router = Router();
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const { registerPost, loginPost, coinsGet, coinsPost } = require('../controllers/authController');
+const router = express_1.Router();
 router.post('/signup', registerPost);
 router.post('/login', loginPost);
+router.get('/coins', authMiddleware_1.requireAuth, coinsGet);
+router.post('/coins', authMiddleware_1.requireAuth, coinsPost);
 module.exports = { router };
