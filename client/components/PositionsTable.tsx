@@ -30,7 +30,7 @@ const PositionsTable: React.FunctionComponent<IPositionsTableProps> = (props) =>
       <Th>Symbol</Th>
       <Th>last price</Th>
       <Th>open price</Th>
-      <Th>last date</Th>
+      <Th>open date</Th>
       <Th>quantity</Th>
       <Th>value</Th>
       <Th>P/L(%)</Th>
@@ -41,18 +41,18 @@ const PositionsTable: React.FunctionComponent<IPositionsTableProps> = (props) =>
   </Thead>
   <Tbody>
     <Tr>
-      <Td>feet</Td>
-      <Td>centimetres (cm)</Td>
-      <Td isNumeric>30.48</Td>
-      <Td>centimetres (cm)</Td>
-      <Td isNumeric>30.48</Td>
-      <Td>centimetres (cm)</Td>
+      <Td>btc</Td>
+      <Td>43k</Td>
+      <Td>37k</Td>
+      <Td>today</Td>
+      <Td>17</Td>
+      <Td isNumeric>7777777</Td>
       <Td isNumeric>30.48</Td>
       <Td>
       <IconButton aria-label="{ icon: Element; }" onClick={handleClick} icon={<FaTimes/>} colorScheme='red' size='sm' />
       </Td>
     </Tr>
-    <Tr>
+    {/* <Tr>
       <Td>feet</Td>
       <Td>centimetres (cm)</Td>
       <Td isNumeric>30.48</Td>
@@ -75,7 +75,7 @@ const PositionsTable: React.FunctionComponent<IPositionsTableProps> = (props) =>
       <Td>
       <IconButton aria-label="{ icon: Element; }" onClick={handleClick} icon={<FaTimes />} colorScheme='red' size='sm' />
       </Td>
-    </Tr>
+    </Tr> */}
   </Tbody>
 </Table>
   );

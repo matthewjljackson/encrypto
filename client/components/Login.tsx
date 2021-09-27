@@ -54,7 +54,6 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
     })
     .catch(err => console.log('blah',err))
   }
-  console.log(user)
 
   return (
     <>

@@ -28,12 +28,16 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
   const [ userCoins, setUserCoins ] = useState<any>(null);
 
   useEffect(() => {
+    console.log('blah',user)
     fetch('http://localhost:3001/coins', {
       credentials: "include",
-      method: "POST",
+      method: "GET",
+      // mode: 'no-cors',
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(user)
+      // body: JSON.stringify(user.username)
     })
+    .then(res => res.json())
+    .then(data => console.log(data))
   }, [])
 
   return (
