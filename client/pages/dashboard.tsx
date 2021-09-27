@@ -29,7 +29,7 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
   const [ newEntry, setNewEntry ] = useState<number>(0);
   const [ openAll, setOpenAll ] = useState<number>(0);
   const [ currentAll, setCurrentAll ] = useState<number>(0);
-  
+  const [ dayOldPrice, setDayOldPrice ] = useState<any>({ price: 0, pct: 0});
 
   useEffect(() => {
     console.log('blah',user)
@@ -43,12 +43,16 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
       console.log('initial',openAll, currentAll);
       let curr = 0;
       let ope = 0;
+      let old = 0;
+      let oldPct = 0;
       for (let j=0; j < data.length; j++) {
         for (let i=0; i < coins.length; i++) {
           if (data[j].symbol === coins[i].symbol) {
             data[j].lastPrice = coins[i].price;
             curr = curr + data[j].lastPrice * data[j].quantity;
-            ope = ope + data[j].openPrice * data[j].quantity
+            ope = ope + data[j].openPrice * data[j].quantity;
+            old = old + Number(coins[i]['1d'].price_change);
+            oldPct = oldPct + Number(coins[i]['1d'].price_change_pct);
             break;
           }
         }
@@ -56,6 +60,7 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
         setUserCoins(data);
         setOpenAll(ope);
         setCurrentAll(curr);
+        setDayOldPrice({ price: old, pct: oldPct })
       })
   }, [newEntry])
 
@@ -66,7 +71,7 @@ const Dashboard: NextPage<IHomeProps> = ({ coins }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <UserNav />
-      <Portfolio currentAll={currentAll} />
+      <Portfolio dayOldPrice={dayOldPrice} currentAll={currentAll} openAll={openAll}/>
       <Positions coins={coins} newEntry={newEntry} setNewEntry={setNewEntry} userCoins={userCoins}/>
       <Home1 coins={coins} />
     </Container>
