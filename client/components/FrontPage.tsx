@@ -39,7 +39,7 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
           setSparkData(x)
         })
         .catch(err => console.log('uh oh'))
-      }, 1000)
+      }, 600)
     }
   }, [])
 
