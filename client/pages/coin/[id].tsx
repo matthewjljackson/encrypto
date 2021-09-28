@@ -4,6 +4,10 @@ import type { NextPage } from 'next';
 import { GetStaticProps, GetServerSideProps } from 'next';
 import Head from 'next/head';
 import UserNav from '../../components/UserNav';
+import dynamic from "next/dynamic";
+const Chart:any = dynamic(() => import("../../components/Chart"), {
+  ssr: false
+});
 
 export const getServerSideProps: GetServerSideProps = async (context:any) => {
   const id = context.params.id;
@@ -20,6 +24,7 @@ interface IHomeProps {
 }
 
 const Details: NextPage<IHomeProps> = ({ coin }) => {
+
   console.log(coin)
   function commafy( num:number ) {
     let str = num.toString().split('.');
@@ -46,6 +51,7 @@ const Details: NextPage<IHomeProps> = ({ coin }) => {
           <Text>({coin[0].id})</Text>
         </HStack>
           <Text>${commafy(twoDecimalPlaces(coin[0].price))}</Text>
+          <Chart />
     </Container>
   )
 }
