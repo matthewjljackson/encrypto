@@ -55,7 +55,6 @@ userSchema.static('login', function (username, password) {
         console.log(user);
         if (user) {
             let auth = yield bcrypt.compare(password, user.password);
-            // auth = true
             console.log(auth);
             if (auth) {
                 return user;

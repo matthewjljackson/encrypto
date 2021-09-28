@@ -54,7 +54,6 @@ userSchema.static('login', async function(username: string, password: string) {
   console.log(user)
   if (user) {
     let auth = await bcrypt.compare(password, user.password);
-    // auth = true
     console.log(auth)
     if (auth) {
       return user;

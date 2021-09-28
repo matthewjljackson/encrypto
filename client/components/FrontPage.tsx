@@ -5,7 +5,8 @@ import { Table, Thead, Tbody, Tr, Th, Td, useColorModeValue } from "@chakra-ui/r
 import { ICoin } from '../interfaces/ICoin';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
 import { UserContext } from '../context/UserContext';
-// import { useColorModeValue }
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface IFrontPageProps {
   coins: ICoin[],
@@ -29,21 +30,24 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
   const [ sparkData, setSparkData ] = useState<any>(null)
 
   useEffect(() => {
-    console.log('kk',idStr)
     if (user) {
       setTimeout(() => {
         fetch(`https://api.nomics.com/v1/currencies/sparkline?key=a3cf70e3536652995126958f3ac6eb8fefadbc08&ids=${idStr}&start=2021-09-20T00%3A00%3A00Z`)
         .then( res => res.json())
         .then((data:any) => {
-          console.log('ddd',data)
           const x = data.reduce((a:any, v:any) => ({ ...a, [v.currency]: v}), {});
-          console.log('lll',x)
           setSparkData(x)
         })
         .catch(err => console.log('uh oh'))
       }, 1000)
     }
   }, [])
+
+  const router = useRouter();
+  function handleClick(coin: any) {
+    router.push(`/coin/${coin.id}`)
+    // console.log(coin)
+  }
 
   return (
     <Table variant="simple">
@@ -62,26 +66,29 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
             sparkArr = sparkData[coin.id].prices;
             sparkArr = sparkArr.map((price:any) => Number(price))
           }
-          return ( 
-          <Tr key={coin.id}>
-            <Td>
-              <HStack>
-                <Image p={1} borderRadius="full" boxSize={{ base: "35px", sm: "40px", md: "45px" }} src={coin.logo_url} alt="coin logo"/>
-                <Text fontSize={{ base: 'xs', sm: 'md', md: 'lg'}}>{coin.name} / {coin.symbol}</Text>
-              </HStack>
-            </Td>
-            <Td>
-              <Text fontSize={{ base: 'xs', sm: 'lg'}}>${commafy(Math.round(coin.price * 100) / 100)}</ Text>
-              <Text fontSize={{ base: 'xs', sm: 'sm'}} color={(coin["1d"].price_change_pct*100)>0 ? greenColor : redColor}>{Math.round(coin["1d"].price_change_pct * 10000)/100}%</Text>
-            </Td>
-            <Td display={{ base: 'none', md: "table-cell"}} fontSize={{ base: 'sm', md: 'lg'}}>${commafy(coin.market_cap)}</Td>
-            <Td display={user ? 'table-cell' : 'none'}>
-              <Sparklines data={sparkArr} svgWidth={200} height={90}>
-                <SparklinesLine color={coin["1d"].price_change> 0 ? greenColor : redColor} />
-              </Sparklines>
-            </Td>
-          </Tr>
-        )}
+          return (     
+            <Tr onClick={() => handleClick(coin)} transition='all .2s ease-in-out' key={coin.id} _hover={{ 
+              transform: 'scale(1.03)',
+              border: '1px solid lightgrey'
+              }}>
+              <Td>
+                <HStack>
+                  <Image p={1} borderRadius="full" boxSize={{ base: "35px", sm: "40px", md: "45px" }} src={coin.logo_url} alt="coin logo"/>
+                  <Text fontSize={{ base: 'xs', sm: 'md', md: 'lg'}}>{coin.name} / {coin.symbol}</Text>
+                </HStack>
+              </Td>
+              <Td>
+                <Text fontSize={{ base: 'xs', sm: 'lg'}}>${commafy(Math.round(coin.price * 100) / 100)}</ Text>
+                <Text fontSize={{ base: 'xs', sm: 'sm'}} color={(coin["1d"].price_change_pct*100)>0 ? greenColor : redColor}>{Math.round(coin["1d"].price_change_pct * 10000)/100}%</Text>
+              </Td>
+              <Td display={{ base: 'none', md: "table-cell"}} fontSize={{ base: 'sm', md: 'lg'}}>${commafy(coin.market_cap)}</Td>
+              <Td display={user ? 'table-cell' : 'none'}>
+                <Sparklines data={sparkArr} svgWidth={200} height={90}>
+                  <SparklinesLine color={coin["1d"].price_change> 0 ? greenColor : redColor} />
+                </Sparklines>
+              </Td>
+            </Tr>
+          )}
         )}
       </Tbody>
     </Table>

@@ -38,8 +38,8 @@ const NewPosition: FunctionComponent<INewPositionProps> = ({ setNewEntry, newEnt
   const [startDate, setStartDate] = useState(new Date());
 
   function handleSubmit(e:FormEvent) {
+    console.log({ symbol, openPrice, quantity, startDate: startDate.getTime()})
     e.preventDefault();
-    console.log({ symbol, openPrice, quantity, startDate: startDate.getTime() })
     fetch('http://localhost:3001/coins', {
       credentials: "include",
       method: "POST",
@@ -57,7 +57,8 @@ const NewPosition: FunctionComponent<INewPositionProps> = ({ setNewEntry, newEnt
     })
     .catch(err => console.log('blah',err))
   }
-  const format = (val:number) => `$${val}`
+  const format = (val:number) => `$${val}`;
+  const parse = (val:any) => val.replace(/^\$/, "")
 
   return (
     <>
@@ -82,7 +83,7 @@ const NewPosition: FunctionComponent<INewPositionProps> = ({ setNewEntry, newEnt
                   </FormControl>
                   <FormControl id="openPrice" isRequired>
                     <FormLabel>Open price</FormLabel>
-                    <Input as={NumberInput} variant='unstyled' defaultValue={0} precision={2} step={10} borderColor='teal' w='11rem' value={format(openPrice)} onChange={(value:any)=>setOpenPrice(value)}>
+                    <Input as={NumberInput} variant='unstyled' defaultValue={0} precision={2} step={10} borderColor='teal' w='11rem' value={openPrice} onChange={(value:any)=>setOpenPrice(value)}>
                       <NumberInputField />
                       <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -105,7 +106,7 @@ const NewPosition: FunctionComponent<INewPositionProps> = ({ setNewEntry, newEnt
                     <Input w='11rem' borderColor='teal' as={DatePicker} selected={startDate} onSelect={(date:any) => setStartDate(date)} />
                   </FormControl>
                 </HStack>
-                <Button type='submit' onClick={onClose} w='8rem' colorScheme='teal'>Add</Button>
+                <Button type='submit' w='8rem' colorScheme='teal'>Add</Button>
               </VStack >
             </form>
 
