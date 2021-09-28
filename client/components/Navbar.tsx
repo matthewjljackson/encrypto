@@ -16,9 +16,9 @@ const Navbar: FunctionComponent<INavbarProps> = (props) => {
     <HStack w='100%' mt={3} pb={3} mb={3} justify='space-between' borderBottom='2px' borderColor="gray.200">
       <Heading fontSize={{ base: 'lg', sm: '2xl', md: '4xl'}} ml={{ base: 0, sm: '1rem', md: '2rem'}} >Encrypto</Heading>
       <Box>
-        <IconButton onClick={toggleColorMode} aria-label="{ icon: Element; }" icon={colorMode === "light" ? <FaSun /> : <FaMoon />} isRound={true} mr={{ base: 0, sm: '1rem', md: '2rem'}} size='lg' />
         <Login />
         <Register />
+        <IconButton onClick={toggleColorMode} aria-label="{ icon: Element; }" icon={colorMode === "light" ? <FaMoon /> : <FaSun />} isRound={true} mr={{ base: 0, sm: '1rem', md: '2rem'}} size='lg' />
       </Box>
     </HStack>
   );

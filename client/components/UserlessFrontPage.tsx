@@ -3,17 +3,14 @@ import {  HStack, Text } from '@chakra-ui/layout';
 import { Image } from "@chakra-ui/react";
 import { Table, Thead, Tbody, Tr, Th, Td, useColorModeValue } from "@chakra-ui/react";
 import { ICoin } from '../interfaces/ICoin';
-import { Sparklines, SparklinesLine } from 'react-sparklines';
 import { UserContext } from '../context/UserContext';
 // import { useColorModeValue }
 
 interface IFrontPageProps {
-  coins: ICoin[],
-  idStr?: string,
-  sparkData?:any
+  coins: ICoin[]
 }
 
-const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
+const UserlessFrontPage: FunctionComponent<IFrontPageProps> = ({ coins }) => {
 
   const greenColor = useColorModeValue('green','#9AE6B4' );
   const redColor = useColorModeValue('red','#FEB2B2' );
@@ -26,24 +23,6 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
   }
 
   const { user, setUser } = useContext(UserContext);
-  const [ sparkData, setSparkData ] = useState<any>(null)
-
-  useEffect(() => {
-    console.log('kk',idStr)
-    if (user) {
-      setTimeout(() => {
-        fetch(`https://api.nomics.com/v1/currencies/sparkline?key=a3cf70e3536652995126958f3ac6eb8fefadbc08&ids=${idStr}&start=2021-09-20T00%3A00%3A00Z`)
-        .then( res => res.json())
-        .then((data:any) => {
-          console.log('ddd',data)
-          const x = data.reduce((a:any, v:any) => ({ ...a, [v.currency]: v}), {});
-          console.log('lll',x)
-          setSparkData(x)
-        })
-        .catch(err => console.log('uh oh'))
-      }, 1000)
-    }
-  }, [])
 
   return (
     <Table variant="simple">
@@ -52,17 +31,10 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
           <Th>Name</Th>
           <Th>Price (24h %)</Th>
           <Th display={{ base: 'none', md: "table-cell"}}>Market cap</Th>
-          <Th display={user ? 'table-cell' : 'none'} >Market Trend (1W)</Th>
         </Tr>
       </Thead>
       <Tbody>
-        {sparkData && coins.map((coin:any) => {
-          let sparkArr:any;
-          if (user) {
-            sparkArr = sparkData[coin.id].prices;
-            sparkArr = sparkArr.map((price:any) => Number(price))
-          }
-          return ( 
+        {coins && coins.map((coin:any) => ( 
           <Tr key={coin.id}>
             <Td>
               <HStack>
@@ -75,17 +47,12 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
               <Text fontSize={{ base: 'xs', sm: 'sm'}} color={(coin["1d"].price_change_pct*100)>0 ? greenColor : redColor}>{Math.round(coin["1d"].price_change_pct * 10000)/100}%</Text>
             </Td>
             <Td display={{ base: 'none', md: "table-cell"}} fontSize={{ base: 'sm', md: 'lg'}}>${commafy(coin.market_cap)}</Td>
-            <Td display={user ? 'table-cell' : 'none'}>
-              <Sparklines data={sparkArr} svgWidth={200} height={90}>
-                <SparklinesLine color={coin["1d"].price_change> 0 ? greenColor : redColor} />
-              </Sparklines>
-            </Td>
           </Tr>
-        )}
+          )
         )}
       </Tbody>
     </Table>
   );
 };
 
-export default FrontPage;
+export default UserlessFrontPage;

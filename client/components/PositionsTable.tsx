@@ -9,7 +9,7 @@ import {
   TableCaption,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlus } from "react-icons/fa";
-import { IconButton, useColorMode, Button } from '@chakra-ui/react';
+import { IconButton, useColorMode, Button, useColorModeValue } from '@chakra-ui/react';
 import NewPosition from './NewPosition';
 import { ICoin } from '../interfaces/ICoin';
 import { Text, HStack } from '@chakra-ui/react'
@@ -22,6 +22,9 @@ interface IPositionsTableProps {
 }
 
 const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, setNewEntry, userCoins }) => {
+
+  const greenColor = useColorModeValue('green','#9AE6B4');
+  const redColor = useColorModeValue('red','#FEB2B2' );
 
   function commafy( num:number ) {
     let str = num.toString().split('.');
@@ -79,7 +82,7 @@ const PositionsTable: FunctionComponent<IPositionsTableProps> = ({ newEntry, set
           <Td isNumeric>{commafy(twoDecimalPlaces(coinData.lastPrice * coinData.quantity))}</Td>
           <Td>
               <Text>${commafy(Math.round((currentValue-openValue) * 100) / 100)}</Text>
-              <Text color={(percentChange>0) ? 'green' : 'red'} >({commafy(Math.round(percentChange * 100) / 100)}%)</Text>
+              <Text color={(percentChange>0) ? greenColor : redColor} >({commafy(Math.round(percentChange * 100) / 100)}%)</Text>
             </Td>
           <Td>
           <IconButton aria-label="{ icon: Element; }" onClick={() => handleClick(coinData)} icon={<FaTimes/>} colorScheme='red' size='sm' />

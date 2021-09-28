@@ -20,8 +20,8 @@ const Navbar: FunctionComponent<INavbarProps> = (props) => {
       <HStack>
         <Text fontWeight='bold' fontStyle='italic'>welcome {user.username}</ Text>
         <Spacer />
-        <IconButton onClick={toggleColorMode} aria-label="{ icon: Element; }" icon={colorMode === "light" ? <FaSun /> : <FaMoon />} isRound={true} mr={{ base: 0, sm: '1rem', md: '2rem'}} size='lg' />
         <Logout />
+        <IconButton onClick={toggleColorMode} aria-label="{ icon: Element; }" icon={colorMode === "light" ? <FaMoon /> : <FaSun />} isRound={true} mr={{ base: 0, sm: '1rem', md: '2rem'}} size='lg' />
       </HStack>
     </HStack>
   );

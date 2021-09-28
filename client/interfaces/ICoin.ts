@@ -27,6 +27,7 @@ export interface ICoin {
   "30d"?: IInterval,
   "365d"?: IInterval,
   "ytd"?: IInterval,
+  spark?: any
 }
 
 interface IInterval {

@@ -4,7 +4,7 @@ import { useDisclosure } from "@chakra-ui/react";
 import { useContext } from 'react';
 import { Heading, VStack } from '@chakra-ui/layout';
 import { Input } from '@chakra-ui/input';
-import { Button, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, FormHelperText, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/UserContext';
 
@@ -20,6 +20,9 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
   const [messageColor, setMessageColor] = useState("gray");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const tealColor = useColorModeValue('teal.500','#81E6D9');
+  const textColor = useColorModeValue('white','black');
+  
   
   function handleSubmit(e:FormEvent) {
     e.preventDefault();
@@ -74,7 +77,7 @@ const Register: FunctionComponent<IRegisterProps> = (props) => {
                   <Input type="password" value={password} borderColor='teal' onChange={(e)=>setPassword(e.target.value)}/>
                   <FormHelperText color={messageColor}>{message}</FormHelperText>
               </FormControl>
-              <Button type='submit' colorScheme='teal'>create account</Button>
+              <Button type='submit' textColor={textColor} bgColor={tealColor}>create account</Button>
               </VStack>
             </form>
           </ModalBody>

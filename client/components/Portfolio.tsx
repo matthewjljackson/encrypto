@@ -1,5 +1,6 @@
 import { VStack, Text, HStack } from '@chakra-ui/layout';
 import * as React from 'react';
+import { useColorModeValue } from '@chakra-ui/react';
 
 interface IPortfolioProps {
   currentAll:number,
@@ -8,6 +9,10 @@ interface IPortfolioProps {
 }
 
 const Portfolio: React.FunctionComponent<IPortfolioProps> = ({ currentAll, openAll, dayOldPrice }) => {
+
+  const greenColor = useColorModeValue('green','#9AE6B4');
+  const redColor = useColorModeValue('red','#FEB2B2' );
+  const tealColor = useColorModeValue('teal.500','#81E6D9');
 
   function twoDecimalPlaces(num: number) {
     return Math.round(num * 100) / 100
@@ -26,20 +31,20 @@ const Portfolio: React.FunctionComponent<IPortfolioProps> = ({ currentAll, openA
     <VStack h='20vh' boxShadow='xl' m='1rem' border='2px' borderColor='gray.200' borderRadius='0.5rem' maxW='container.lg' justifyContent='center'>
       <VStack w='80%' align='flex-start'>
       <Text fontSize='md'>Main portfolio</Text>
-      <Text fontSize='3xl'>${commafy(twoDecimalPlaces(currentAll))}</Text>
+      <Text textColor={tealColor} fontSize='3xl'>${commafy(twoDecimalPlaces(currentAll))}</Text>
       </VStack>
       <HStack w='80%' justifyContent='space-between'>
         <Text fontSize='md'>24h change</Text>
         <HStack>
           <Text fontSize='xl'>${commafy(twoDecimalPlaces(dayOldPrice.price))}</Text>
-          <Text fontSize='md' color={(dayOldPrice.price>0) ? 'green' : 'red'}>{commafy(twoDecimalPlaces(dayOldPrice.pct))}%</Text>
+          <Text fontSize='md' color={(dayOldPrice.price>0) ? greenColor : redColor}>{commafy(twoDecimalPlaces(dayOldPrice.pct))}%</Text>
         </HStack>
       </HStack>
       <HStack w='80%' justifyContent='space-between'>
         <Text fontSize='md'>all time change</Text>
         <HStack>
           <Text fontSize='xl'>${commafy(twoDecimalPlaces(currentAll - openAll))}</Text>
-          <Text fontSize='md' color={(allTimePercentChange>0) ? 'green' : 'red'}>{commafy(twoDecimalPlaces(allTimePercentChange))}%</Text>
+          <Text fontSize='md' color={(allTimePercentChange>0) ? greenColor : redColor}>{commafy(twoDecimalPlaces(allTimePercentChange))}%</Text>
         </HStack>
       </HStack>
     </VStack>

@@ -24,6 +24,8 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const bgColor = useColorModeValue('whiteAlpha', 'gray.800');
   const fontColor = useColorModeValue('black', 'whiteAlpha');
+  const tealColor = useColorModeValue('teal.500','#81E6D9');
+  const textColor = useColorModeValue('white','black');
 
   function handleSubmit(e:FormEvent) {
     e.preventDefault();
@@ -76,7 +78,7 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
                   <Input type="password" value={password} borderColor='teal' onChange={(e)=>setPassword(e.target.value)}/>
                   <FormHelperText color={messageColor}>{message}</FormHelperText>
               </FormControl>
-              <Button type='submit' colorScheme='teal'>Sign in</Button>
+              <Button type='submit' textColor={textColor} bgColor={tealColor}>Sign in</Button>
               </VStack>
             </form>
           </ModalBody>
