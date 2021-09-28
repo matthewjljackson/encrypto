@@ -42,8 +42,8 @@ export const registerPost = async (req:Request, res:Response) => {
   try {
     const user = await User.create<any>({ username, password });
     const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(201).json({ id: user._id, username: user.username });
+    res.cookie('jwt', token, { httpOnly: true, secure:false, sameSite:'strict', maxAge: maxAge * 1000 });
+    res.status(200).json({ id: user._id, username: user.username });
   }
   catch(err) {
     const errors = handleErrors(err);
@@ -72,7 +72,7 @@ export const coinsGet = async (req: Request, res: Response) => {
   console.log('coin getting');
   try {
     const user:any = await User.findById({ _id: res.locals.user.id }).populate('coins');
-    console.log(user.coins[0].openPrice)
+    console.log(user)
     res.status(200);
     if (user) {
       res.json(user.coins);

@@ -2,11 +2,8 @@ import type { NextPage } from 'next';
 import { Container, VStack } from '@chakra-ui/layout';
 import { GetServerSideProps } from 'next';
 import { ICoin } from '../interfaces/ICoin';
-import Home1 from '../components/FrontPage';
 import Navbar from '../components/Navbar';
 import Head from 'next/head';
-import { useEffect, useContext } from 'react';
-import { IdContext } from '../context/IdContext';
 import UserlessFrontPage from '../components/UserlessFrontPage';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -22,15 +19,6 @@ interface IHomeProps {
 }
 
 const Home: NextPage<IHomeProps> = ({ coins }) => {
-
-  useEffect(() => {
-    let str =''
-    coins.forEach((coin:ICoin) => {
-      str = str + coin.id + ','
-    })
-    str = str.slice(0,-1)
-    // console.log(str)
-  }, [])
 
   return (
     <VStack>

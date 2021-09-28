@@ -49,7 +49,7 @@ const Details: NextPage<IHomeProps> = ({ coin }) => {
       })
       .catch(err => console.log(err.message))
     }, 600)
-  }, [])
+  }, [coin])
 
   function commafy( num:number ) {
     let str = num.toString().split('.');

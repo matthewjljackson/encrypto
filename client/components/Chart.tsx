@@ -16,8 +16,8 @@ const Chart: FunctionComponent<IChartProps> = ({ sparkCoins }) => {
       lineWidth: 2,
       crosshairMarkerVisible: true,
       crosshairMarkerRadius: 6,
-      crosshairMarkerBorderColor: '#1A202C',
-      crosshairMarkerBackgroundColor: '#FFFFFF',
+      // crosshairMarkerBorderColor: '#1A202C',
+      // crosshairMarkerBackgroundColor: '#FFFFFF',
       lastPriceAnimation: LastPriceAnimationMode.Continuous,
     });
     lineSeries.setData(sparkCoins);
@@ -42,7 +42,7 @@ const Chart: FunctionComponent<IChartProps> = ({ sparkCoins }) => {
       }
     });
     // console.log('dog', sparkCoins)
-  }, []);
+  }, [sparkCoins]);
 
   return <Box borderRadius='md' ref={chartRef} />
 

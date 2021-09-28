@@ -41,7 +41,7 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
         .catch(err => console.log('uh oh'))
       }, 600)
     }
-  }, [])
+  }, [idStr,user])
 
   const router = useRouter();
   function handleClick(coin: any) {

@@ -52,8 +52,8 @@ const registerPost = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const user = yield User_1.User.create({ username, password });
         const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        res.status(201).json({ id: user._id, username: user.username });
+        res.cookie('jwt', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: maxAge * 1000 });
+        res.status(200).json({ id: user._id, username: user.username });
     }
     catch (err) {
         const errors = handleErrors(err);
@@ -82,7 +82,7 @@ const coinsGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('coin getting');
     try {
         const user = yield User_1.User.findById({ _id: res.locals.user.id }).populate('coins');
-        console.log(user.coins[0].openPrice);
+        console.log(user);
         res.status(200);
         if (user) {
             res.json(user.coins);

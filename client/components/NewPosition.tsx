@@ -77,7 +77,7 @@ const NewPosition: FunctionComponent<INewPositionProps> = ({ setNewEntry, newEnt
                   <FormControl id="symbol" isRequired>
                     <FormLabel>Symbol</FormLabel>
                     <InputGroup>
-                    <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />}/>
+                    {/* <InputLeftElement pointerEvents="none" children={<FaSearch color="gray.300" />}/> */}
                       <Input placeholder='currency' borderColor='teal'type="text" w='11rem'  value={symbol} onChange={(e)=>setSymbol(e.target.value)} />
                     </ InputGroup>
                   </FormControl>
