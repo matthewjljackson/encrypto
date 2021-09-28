@@ -1,4 +1,4 @@
-import { Container, Heading, HStack, Text, VStack } from '@chakra-ui/layout';
+import { Box, Container, Heading, HStack, Text, VStack } from '@chakra-ui/layout';
 import { Image } from "@chakra-ui/react";
 import type { NextPage } from 'next';
 import { GetStaticProps, GetServerSideProps } from 'next';
@@ -9,11 +9,11 @@ const Chart: any = dynamic(() => import("../../components/Chart"), {
   ssr: false
 });
 import { useEffect, useState, FunctionComponent } from 'react';
-import { FaTaxi } from 'react-icons/fa';
+import TimeTable from '../../components/TimeTable';
 
 export const getServerSideProps: GetServerSideProps = async (context:any) => {
   const id = context.params.id;
-  const res = await fetch(`https://api.nomics.com/v1/currencies/ticker?key=a3cf70e3536652995126958f3ac6eb8fefadbc08&ids=${id}&interval=1d&convert=USD`)
+  const res = await fetch(`https://api.nomics.com/v1/currencies/ticker?key=a3cf70e3536652995126958f3ac6eb8fefadbc08&ids=${id}&convert=USD`)
   const data = await res.json();
     console.log(data)
   return {
@@ -31,18 +31,18 @@ const Details: NextPage<IHomeProps> = ({ coin }) => {
 
   useEffect(() => {
     console.log(coin)
-    console.log(coin[0].id)
+    // console.log(coin[0].id)
     setTimeout(() => {
       fetch(`https://api.nomics.com/v1/currencies/sparkline?key=a3cf70e3536652995126958f3ac6eb8fefadbc08&ids=${coin[0].id}&start=2017-04-14T00%3A00%3A00Z`)
       .then(res => res.json())
       .then((data:any) => {
-        console.log('dat', data[0])
+        // console.log('dat', data[0])
         let x = [];
         for (let i=0; i<data[0].prices.length; i++) {
           x.push({ time: data[0].timestamps[i], value: data[0].prices[i] })
         }
         setSparkData(x);
-        console.log('bbb',sparkData)
+        // console.log('bbb',sparkData)
       })
       .catch(err => console.log(err.message))
     }, 500)
@@ -67,13 +67,18 @@ const Details: NextPage<IHomeProps> = ({ coin }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <UserNav />
-        <HStack>
-          <Image src={coin[0].logo_url} borderRadius='full' boxSize="100px" alt='logo' />
-          <Heading>{coin[0].name}</Heading>
-          <Text>({coin[0].id})</Text>
+      <VStack spacing={5} mt={5}>
+        <HStack w='90%' alignItems='flex-end'>
+          <Image src={coin[0].logo_url} borderRadius='full' borderColor='whiteAlpha.500' boxSize="60px" alt='logo' />
+            <Heading size='3xl' >{coin[0].name}</Heading>
+            <Text pb={1} alignSelf='flex-end' fontSize='2xl'>({coin[0].id})</Text>
         </HStack>
-          <Text>${commafy(twoDecimalPlaces(coin[0].price))}</Text>
-          {sparkData && <Chart sparkCoins={sparkData} />}
+        <Text fontSize='3xl' w='90%'>${commafy(twoDecimalPlaces(coin[0].price))}</Text>
+        <Box alignItems='flex-end' w='90%'>
+          <TimeTable coin={coin}/>
+        </Box>
+        {sparkData && <Chart sparkCoins={sparkData} />}
+      </VStack>
     </Container>
   )
 }
