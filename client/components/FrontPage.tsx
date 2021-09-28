@@ -46,7 +46,6 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
   const router = useRouter();
   function handleClick(coin: any) {
     router.push(`/coin/${coin.id}`)
-    // console.log(coin)
   }
 
   return (
