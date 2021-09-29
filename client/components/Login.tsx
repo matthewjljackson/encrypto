@@ -71,11 +71,11 @@ const Login: FunctionComponent<ILoginProps> = (props) => {
                 <Heading>Login</Heading>
                 <FormControl id="username" isRequired  w='70%'>
                   <FormLabel>Username</FormLabel>
-                  <Input borderColor='teal'type="text"  value={username} onChange={(e)=>setUsername(e.target.value)} />
+                  <Input type="text"  value={username} onChange={(e)=>setUsername(e.target.value)} />
                 </FormControl>
                 <FormControl id="password" isRequired w='70%'>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" value={password} borderColor='teal' onChange={(e)=>setPassword(e.target.value)}/>
+                  <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
                   <FormHelperText color={messageColor}>{message}</FormHelperText>
               </FormControl>
               <Button type='submit' textColor={textColor} bgColor={tealColor}>Sign in</Button>

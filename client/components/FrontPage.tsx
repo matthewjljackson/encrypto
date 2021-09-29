@@ -66,10 +66,7 @@ const FrontPage: FunctionComponent<IFrontPageProps> = ({ coins, idStr }) => {
             sparkArr = sparkArr.map((price:any) => Number(price))
           }
           return (     
-            <Tr onClick={() => handleClick(coin)} transition='all .2s ease-in-out' key={coin.id} _hover={{ 
-              transform: 'scale(1.03)',
-              border: '1px solid lightgrey'
-              }}>
+            <Tr onClick={() => handleClick(coin)} transition='all .2s ease-in-out' key={coin.id} _hover={{transform: 'scale(1.03)'}}>
               <Td>
                 <HStack>
                   <Image p={1} borderRadius="full" boxSize={{ base: "35px", sm: "40px", md: "45px" }} src={coin.logo_url} alt="coin logo"/>
