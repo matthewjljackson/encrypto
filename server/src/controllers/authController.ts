@@ -3,9 +3,8 @@ import jwt from 'jsonwebtoken';
 import { IUser } from '../interfaces/IUser';
 import { User } from '../models/User';
 import { Coin } from '../models/User';
-const bcrypt = require('bcrypt');
 
-const handleErrors = (err: any) => {
+export const handleErrors = (err: any) => {
   console.log(err.message, err.code);
   let errors: any = { username: '', password: '' };
   // register username error
@@ -28,10 +27,19 @@ const handleErrors = (err: any) => {
   return errors;
 };
 
-const maxAge = 24 * 60 * 60;
 const createToken = (id: string) => {
-  return jwt.sign({ id }, 'super duper secret password', {
-    expiresIn: maxAge, // expects time in seconds
+  const token = jwt.sign({ id }, 'super duper secret password', {
+    expiresIn: '1d', // expects time in seconds
+  });
+  return token;
+};
+
+const sendTokenAsCookie = (res: Response, token: string) => {
+  res.cookie('jwt', token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+    maxAge: 8.64e7, // 7 days
   });
 };
 
@@ -39,14 +47,10 @@ export const registerPost = async (req: Request, res: Response) => {
   console.log('register post request');
   const { username, password }: IUser = req.body;
   try {
-    const user = await User.create<any>({ username, password });
+    const user = await User.create<IUser>({ username, password });
     const token = createToken(user._id);
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'strict',
-      maxAge: maxAge * 1000,
-    });
+    sendTokenAsCookie(res, token);
+
     res.status(201).json({ id: user._id, username: user.username });
   } catch (err) {
     const errors = handleErrors(err);
@@ -62,12 +66,9 @@ export const loginPost = async (req: Request, res: Response) => {
     const user = await User.login(username, password);
     const token = createToken(user._id);
     console.log(token, user._id);
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'strict',
-      maxAge: maxAge * 1000,
-    });
+
+    sendTokenAsCookie(res, token);
+
     res.status(200).json({ id: user._id, username: user.username });
   } catch (error) {
     const errors = handleErrors(error);
@@ -82,9 +83,8 @@ export const coinsGet = async (req: Request, res: Response) => {
       'coins'
     );
     console.log(user);
-    res.status(200);
     if (user) {
-      res.json(user.coins);
+      res.status(200).json(user.coins);
     } else {
       res.json({ error: "couldn't find coins" });
     }
