@@ -61,7 +61,7 @@ describe('Auth route', () => {
       await request(app).post('/register').send(user);
     });
 
-    it('should return a user with id username, and coi', async () => {
+    it('should return a user with id username, and coins object', async () => {
       const response = await request(app).post('/login').send(user);
       expect(response.body).toEqual({
         id: expect.any(String),
@@ -86,6 +86,12 @@ describe('Auth route', () => {
       });
     });
 
+    it('should return a cookie with value jwt when login is valid', async () => {
+      const response = await request(app).post('/login').send(user).expect(200);
+
+      expect(response.headers['set-cookie'][0]).toMatch(/jwt=/);
+    });
+
     it('should return 400 and invalid login if the password is incorrect', async () => {
       await request(app)
         .post('/login')
@@ -99,6 +105,32 @@ describe('Auth route', () => {
             password: 'incorrect password',
           },
         });
+    });
+  });
+
+  describe('/GET /coins', () => {
+    it('should return 401 code if not authenticated ', async () => {
+      await request(app).get('/coins').expect(401);
+    });
+
+    it('should return the users coins upon successful login and request', async () => {
+      const login = await request(app).post('/login').send(user);
+
+      const tokenFromHeader = login.headers['set-cookie'][0]
+        .split('=')[1]
+        .split(' ')[0];
+
+      const validToken = tokenFromHeader.substring(
+        0,
+        tokenFromHeader.length - 1
+      );
+
+      const response = await request(app)
+        .get('/coins')
+        .set('Cookie', `jwt=${validToken}`)
+        .expect(200);
+
+      expect(response.body).toBeInstanceOf(Array);
     });
   });
 });
