@@ -1,24 +1,36 @@
 import express from 'express';
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
+import authRoutes from './routes/auth/auth.routes';
+import coinsRoutes from './routes/coins/coins.routes';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 const { connectDb } = require('./models/index');
-const { router } = require('./routes/authRoutes');
+
+dotenv.config();
 
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET","POST","DELETE"],
-  credentials: true,
-  secure:false
-}));
-app.use(cookieParser());
-app.use(router);
 
-connectDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`express running on port: ${PORT}`);
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'DELETE'],
+    credentials: true,
   })
-})
+);
+
+app.use(cookieParser());
+
+app.use('/coins', coinsRoutes);
+
+app.use('/', authRoutes);
+
+(async () => await connectDb())();
+
+const server = app.listen(PORT, () => {
+  console.log(`express running on port: ${PORT}`);
+});
+
+export default server;
