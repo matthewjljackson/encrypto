@@ -1,6 +1,6 @@
 export const userStub = () => {
   return {
-    username: 'johndoe1',
+    username: 'johndoe',
     password: 'john123',
   };
 };
