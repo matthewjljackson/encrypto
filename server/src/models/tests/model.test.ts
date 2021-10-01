@@ -44,7 +44,7 @@ describe('models', () => {
     });
 
     it('should throw no errors if login details are provided', function(done) {
-        var newUser = new User({username: user.username, password: user.password } );
+        const newUser = new User({username: user.username, password: user.password } );
         newUser.validate(function(err) {
           expect(err).toBeNull();
           done();
@@ -52,7 +52,7 @@ describe('models', () => {
     });
 
     it('should be invalid if name is empty', function(done) {
-        var newUser = new User({username: '', password: user.password } );
+        const newUser = new User({username: '', password: user.password } );
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
@@ -60,14 +60,14 @@ describe('models', () => {
     });
 
     it('should be invalid if password is empty', function(done) {
-        var newUser = new User({username: user.username, password: '' } );
+        const newUser = new User({username: user.username, password: '' } );
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
         });
     });
     it('should be invalid if password is less than 6 characters', function(done) {
-        var newUser = new User({username: user.username, password: '12345' } );
+        const newUser = new User({username: user.username, password: '12345' } );
         // console.log()
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
@@ -83,7 +83,7 @@ describe('models', () => {
     });
 
     it('should throw no error if credentials are provided', function(done) {
-        var newCoin = new Coin({
+        const newCoin = new Coin({
           owner: coin.owner,
           symbol: coin.symbol,
           openPrice: coin.openPrice,
