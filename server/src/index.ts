@@ -4,7 +4,7 @@ import coinsRoutes from './routes/coins/coins.routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-const { connectDb } = require('./models/index');
+import { connectDb } from './models/index';
 
 dotenv.config();
 
