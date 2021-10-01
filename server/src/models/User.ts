@@ -8,10 +8,13 @@ import bcrypt from 'bcrypt';
 import { Coin } from './Coin';
 
 export class User {
-  @prop({ unique: true })
+  @prop({ required: [true, 'Please enter a username'], unique: true })
   username!: string;
 
-  @prop()
+  @prop({
+    required: [true, 'Please enter a password'],
+    minLength: [6, 'Minimum password length is 6 characters'],
+  })
   password!: string;
 
   @prop({ ref: () => 'Coin' })

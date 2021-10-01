@@ -4,7 +4,11 @@ import coinsRoutes from './routes/coins/coins.routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+<<<<<<< HEAD
 import { connectDb }  from './models/index';
+=======
+import { connectDb } from './models/index';
+>>>>>>> 5c7616d3be2acae7b1c06c13429b489834c5a443
 
 dotenv.config();
 
