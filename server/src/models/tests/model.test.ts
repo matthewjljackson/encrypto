@@ -68,7 +68,6 @@ describe('models', () => {
     });
     it('should be invalid if password is less than 6 characters', function(done) {
         const newUser = new User({username: user.username, password: '12345' } );
-        // console.log()
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
