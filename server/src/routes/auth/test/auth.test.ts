@@ -1,6 +1,6 @@
 import { userStub } from './stubs/userStub';
 import request from 'supertest';
-import app from '../../../index';
+import server, { app } from '../../../index';
 import mongoose, { Connection } from 'mongoose';
 
 describe('Auth route', () => {
@@ -16,11 +16,10 @@ describe('Auth route', () => {
     );
   });
 
-  afterAll(() => {
-    dbConnection.dropCollection('users');
-    dbConnection.dropDatabase();
+  afterAll(async () => {
+    await dbConnection.dropDatabase();
 
-    app.close();
+    server.close();
   });
 
   describe('/POST /register', () => {
@@ -57,10 +56,6 @@ describe('Auth route', () => {
   });
 
   describe('/POST /login', () => {
-    beforeAll(async () => {
-      await request(app).post('/register').send(user);
-    });
-
     it('should return a user with id username, and coins object', async () => {
       const response = await request(app).post('/login').send(user);
       expect(response.body).toEqual({
@@ -130,7 +125,7 @@ describe('Auth route', () => {
         .set('Cookie', `jwt=${validToken}`)
         .expect(200);
 
-      expect(response.body).toBeInstanceOf(Array);
+      expect(response.body).toEqual(expect.arrayContaining([]));
     });
   });
 });

@@ -1,71 +1,39 @@
-import { Schema, model, Model } from 'mongoose';
-const bcrypt = require('bcrypt');
+import {
+  getModelForClass,
+  prop,
+  Ref,
+  ReturnModelType,
+} from '@typegoose/typegoose';
+import bcrypt from 'bcrypt';
+import { Coin } from './Coin';
 
-interface IUser {
-  username: string;
-  password: string;
-  coins?: any[];
-  login?: any;
+export class User {
+  @prop({ unique: true })
+  username!: string;
+
+  @prop()
+  password!: string;
+
+  @prop({ ref: () => 'Coin' })
+  public coins?: Ref<Coin>[];
+
+  public static async login(
+    this: ReturnModelType<typeof User>,
+    username: string,
+    password: string
+  ) {
+    const user = await this.findOne({ username });
+
+    if (!user) throw Error('that username does not exist');
+
+    let isValidLogin = await bcrypt.compare(password, user.password);
+
+    if (!isValidLogin) throw Error('incorrect password');
+
+    return user;
+  }
 }
 
-interface userModel extends Model<IUser> {
-  login(a: any, b: any): any;
-}
+const UserModel = getModelForClass(User);
 
-const userSchema = new Schema<IUser, userModel>({
-  username: {
-    type: String,
-    required: [true, 'Please enter a username'],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Please enter a password'],
-    minlength: [6, 'Minimum password length is 6 characters'],
-  },
-  coins: [{ type: Schema.Types.ObjectId, ref: 'coin', required: false }],
-});
-
-// fire a function before doc saved to db
-userSchema.pre('save', async function (this: any, next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// static method to login user
-// userSchema.statics.login = async function(username: string, password: string) {
-//   const user = await this.findOne({ username });
-//   if (user) {
-//     const auth = await bcrypt.compare(password, user.password);
-//     if (auth) {
-//       return user;
-//     }
-//     throw Error('incorrect password')
-//   }
-//   throw Error('that username does not exist')
-// }
-
-userSchema.static('login', async function (username: string, password: string) {
-  const user = await this.findOne({ username });
-
-  if (!user) throw Error('that username does not exist');
-
-  let isValidLogin = await bcrypt.compare(password, user.password);
-
-  if (!isValidLogin) throw Error('incorrect password');
-
-  return user;
-});
-
-const coinSchema = new Schema<any>({
-  owner: { type: Schema.Types.ObjectId, ref: 'user', required: true },
-  symbol: { type: String, required: true },
-  openPrice: { type: Number, required: true },
-  quantity: { type: Number, required: true },
-  timestamp: { type: Number, required: true },
-});
-
-export const Coin = model<any>('coin', coinSchema);
-export const User = model<IUser, userModel>('user', userSchema);
+export default UserModel;

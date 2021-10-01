@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { IUser } from '../interfaces/IUser';
-import { User } from '../models/User';
-import { Coin } from '../models/User';
+import UserModel from '../models/User';
+import CoinModel from '../models/Coin';
 
 export const handleErrors = (err: any) => {
   console.log(err.message, err.code);
@@ -47,11 +48,16 @@ export const registerPost = async (req: Request, res: Response) => {
   console.log('register post request');
   const { username, password }: IUser = req.body;
   try {
-    const user = await User.create<IUser>({ username, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await UserModel.create({
+      username,
+      password: hashedPassword,
+    });
     const token = createToken(user._id);
     sendTokenAsCookie(res, token);
 
-    res.status(201).json({ id: user._id, username: user.username });
+    return res.status(201).json({ id: user._id, username: user.username });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
@@ -63,7 +69,7 @@ export const loginPost = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   console.log(password);
   try {
-    const user = await User.login(username, password);
+    const user = await UserModel.login(username, password);
     const token = createToken(user._id);
     console.log(token, user._id);
 
@@ -79,9 +85,9 @@ export const loginPost = async (req: Request, res: Response) => {
 export const coinsGet = async (req: Request, res: Response) => {
   console.log('coin getting');
   try {
-    const user: any = await User.findById({ _id: res.locals.user.id }).populate(
-      'coins'
-    );
+    const user: any = await UserModel.findById({
+      _id: res.locals.user.id,
+    }).populate('coins');
     console.log(user);
     if (user) {
       res.status(200).json(user.coins);
@@ -98,8 +104,8 @@ export const coinsPost = async (req: Request, res: Response) => {
   console.log('coin posting');
   const { symbol, openPrice, quantity, startDate } = req.body;
   try {
-    const owner: any = await User.findById(res.locals.user.id);
-    const addCoin = await Coin.create({
+    const owner: any = await UserModel.findById(res.locals.user.id);
+    const addCoin = await CoinModel.create({
       owner: owner._id,
       symbol: symbol.toUpperCase(),
       openPrice,
@@ -119,8 +125,8 @@ export const coinsDelete = async (req: Request, res: Response) => {
   console.log('coin deleting');
   const { _id } = req.body;
   try {
-    const owner: any = await User.findById(res.locals.user.id);
-    const coinDoc: any = await Coin.deleteOne({ _id });
+    const owner: any = await UserModel.findById(res.locals.user.id);
+    const coinDoc: any = await CoinModel.deleteOne({ _id });
     await owner.coins.pull({ _id });
     await owner.save();
     res.status(200).json({ status: 'coins deleted' });
