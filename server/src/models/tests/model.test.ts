@@ -2,7 +2,9 @@ import { userStub } from './stubs/userStub';
 import { coinStub } from './stubs/coinStub';
 import app from '../../index';
 import mongoose, { Connection } from 'mongoose';
-import { User, Coin } from '../User'
+// import { User, Coin } from '../User'
+import  UserModel  from '../User'
+import  CoinModel  from '../Coin'
 
 describe('models', () => {
   let dbConnection: Connection;
@@ -44,7 +46,7 @@ describe('models', () => {
     });
 
     it('should throw no errors if login details are provided', function(done) {
-        const newUser = new User({username: user.username, password: user.password } );
+        const newUser = new UserModel({username: user.username, password: user.password } );
         newUser.validate(function(err) {
           expect(err).toBeNull();
           done();
@@ -52,7 +54,7 @@ describe('models', () => {
     });
 
     it('should be invalid if name is empty', function(done) {
-        const newUser = new User({username: '', password: user.password } );
+        const newUser = new UserModel({username: '', password: user.password } );
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
@@ -60,14 +62,14 @@ describe('models', () => {
     });
 
     it('should be invalid if password is empty', function(done) {
-        const newUser = new User({username: user.username, password: '' } );
+        const newUser = new UserModel({username: user.username, password: '' } );
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
         });
     });
     it('should be invalid if password is less than 6 characters', function(done) {
-        const newUser = new User({username: user.username, password: '12345' } );
+        const newUser = new UserModel({username: user.username, password: '12345' } );
         newUser.validate(function(err) {
           expect(err).toBeTruthy()
           done();
@@ -82,7 +84,7 @@ describe('models', () => {
     });
 
     it('should throw no error if credentials are provided', function(done) {
-        const newCoin = new Coin({
+        const newCoin = new CoinModel({
           owner: coin.owner,
           symbol: coin.symbol,
           openPrice: coin.openPrice,
@@ -90,7 +92,7 @@ describe('models', () => {
           timestamp: coin.timestamp
         } );
 
-        newCoin.validate(function(err: any) {
+        newCoin.validate(function(err) {
           console.log(err)
           done();
         });
