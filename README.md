@@ -3,8 +3,8 @@
 ### Cryptocurrency portfolio tracker
 
 <br>
-   <code><img height="420" width="420" alt="Typescript" src="./public/dashboard.png"></code>
-   <code><img height="420" width="420" alt="Next.js" src="./public/dynamic-route.png"></code>
+   <code><img height="350" width="350" alt="Typescript" src="./public/dashboard.png"></code>
+   <code><img height="350" width="350" alt="Next.js" src="./public/dynamic-route.png"></code>
 <br>
 
 ## Getting started
