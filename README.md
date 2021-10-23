@@ -1,11 +1,15 @@
 # encrypto
 
-Cryptocurrency portfolio tracker
+### Cryptocurrency portfolio tracker
 
-Getting started
+<br>
+   <code><img height="420" width="420" alt="Typescript" src="./public/dashboard.png"></code>
+   <code><img height="420" width="420" alt="Next.js" src="./public/dynamic-route.png"></code>
+<br>
 
-1. Download
-   ![ScreenShot](/public/dashboard.png)
-   ![ScreenShot](/public/dynamic-route.png)
-   <code><img height="50" width="50" alt="Typescript" src="./public/dashboard.png"></code>
-   <code><img height="50" width="50" alt="Next.js" src="./public/dynamic-route.png"></code>
+## Getting started
+
+1. Fork the repo. From root directory, run `cd ./server ; npm i ; nodemon ./server-js/index.js`
+2. In a separate terminal, from root directory run  `cd ./client ; npm i ; npm run start`
+3. With mongodb installed, run `brew services start mongodb-community`
+4. You're all set, load the app in your browser on `http://localhost:3000/`
