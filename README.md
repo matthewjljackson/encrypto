@@ -13,3 +13,7 @@
 2. In a separate terminal, from root directory run  `cd ./client ; npm i ; npm run start`
 3. With mongodb installed, run `brew services start mongodb-community`
 4. You're all set, load the app in your browser on `http://localhost:3000/`
+
+## Tech stach
+
+### Typescript, Next.js, React, ChakraUI, Mongoose
